@@ -1,1 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clock</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html, body {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    overflow: hidden;
+  }
+
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+
+  .clock {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .flips {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .flip {
+    position: relative;
+    background: linear-gradient(180deg, #b8b8b8 0%, #9a9a9a 50%, #888888 50%, #7a7a7a 100%);
+    border-radius: 12px;
+    padding: 14px 18px;
+    min-width: 84px;
+    text-align: center;
+    box-shadow:
+      0 6px 14px rgba(0, 0, 0, 0.18),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+  }
+
+  /* horizontal split line through the middle */
+  .flip::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 1px;
+    background: rgba(0, 0, 0, 0.25);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.15);
+  }
+
+  .flip .digit {
+    font-size: clamp(40px, 12vw, 72px);
+    font-weight: 600;
+    color: #2a2a2a;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    position: relative;
+    z-index: 1;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+
+  .colon {
+    font-size: clamp(36px, 10vw, 60px);
+    font-weight: 600;
+    color: #6a6a6a;
+    line-height: 1;
+    padding-bottom: 6px;
+  }
+
+  .date {
+    color: #8a8a8a;
+    font-size: clamp(13px, 3.5vw, 17px);
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+</style>
+</head>
+<body>
+  <div class="clock">
+    <div class="flips">
+      <div class="flip"><span class="digit" id="hours">--</span></div>
+      <div class="colon">:</div>
+      <div class="flip"><span class="digit" id="minutes">--</span></div>
+    </div>
+    <div class="date" id="date">—</div>
+  </div>
+
+  <script>
+    function pad(n) { return n < 10 ? '0' + n : '' + n; }
+
+    function update() {
+      const now = new Date();
+      document.getElementById('hours').textContent = pad(now.getHours());
+      document.getElementById('minutes').textContent = pad(now.getMinutes());
+
+      const opts = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
+      const d = now.toLocaleDateString('en-US', opts);
+      // format: "Sunday | May 24, 2026"
+      const parts = d.split(', ');
+      // parts[0] = "Sunday", parts[1] = "May 24", parts[2] = "2026"  (locale-dependent)
+      // safer: just replace first comma with " |"
+      document.getElementById('date').textContent = d.replace(',', ' |');
+    }
+
+    update();
+    setInterval(update, 1000);
+  </script>
+</body>
+</html>
 
